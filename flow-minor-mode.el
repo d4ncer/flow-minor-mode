@@ -6,7 +6,7 @@
 ;; Version: 0.3
 ;; URL: https://github.com/an-sh/flow-minor-mode
 
-;; Package-Requires: ((emacs "25.1"))
+;; Package-Requires: ((emacs "25.1") (s "1.10.0"))
 
 ;;; Commentary:
 
@@ -31,8 +31,13 @@
 (require 'xref)
 (require 'json)
 (require 'compile)
+(require 's)
 
 (defconst flow-minor-buffer "*Flow Output*")
+
+(defconst flow-minor-garbage-error "Please wait. Server is garbage collecting shared memory: -")
+(defconst flow-minor-handle-error-1 "Please wait. Server is handling a request (starting up): \\")
+(defconst flow-minor-handle-error-2 "Please wait. Server is handling a request (starting up): -")
 
 (defcustom flow-minor-default-binary "flow"
   "Flow executable to use when no project-specific binary is found."
@@ -164,7 +169,11 @@ BODY progn"
           (line (number-to-string (line-number-at-pos)))
           (col (number-to-string (1+ (current-column))))
           (type (flow-minor-cmd-to-string "type-at-pos" file line col)))
-     (message "%s" (flow-minor-colorize-type (car (split-string type "\n")))))))
+     (message "%s" (flow-minor-colorize-type (s-chop-prefixes
+                                              (list flow-minor-garbage-error
+                                                    flow-minor-handle-error-1
+                                                    flow-minor-handle-error-2)
+                                              (car (s-lines type))))))))
 
 (defun flow-minor-jump-to-definition ()
   "Jump to definition."
