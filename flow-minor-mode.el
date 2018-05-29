@@ -54,6 +54,11 @@
   :group 'flow-minor-mode
   :type 'boolean)
 
+(defcustom flow-minor-use-eldoc-p t
+  "Use Eldoc to display type-at-pos"
+  :group 'flow-minor-mode
+  :type 'boolean)
+
 (defun flow-minor-column-at-pos (position)
   "Column number at position.
 POSITION point"
@@ -276,7 +281,7 @@ BODY progn"
 (define-minor-mode flow-minor-mode
   "Flow mode"
   nil " Flow" flow-minor-mode-map
-  (if flow-minor-mode
+  (if (and flow-minor-mode flow-minor-eldoc)
       (progn
         (setq-local eldoc-documentation-function 'flow-minor-eldoc-documentation-function)
         (eldoc-mode))))
