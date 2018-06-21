@@ -281,7 +281,7 @@ BODY progn"
 (define-minor-mode flow-minor-mode
   "Flow mode"
   nil " Flow" flow-minor-mode-map
-  (if (and flow-minor-mode flow-minor-eldoc)
+  (if (and flow-minor-mode flow-minor-use-eldoc-p)
       (progn
         (setq-local eldoc-documentation-function 'flow-minor-eldoc-documentation-function)
         (eldoc-mode))))
