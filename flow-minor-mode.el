@@ -38,6 +38,7 @@
 (defconst flow-minor-garbage-error "Please wait. Server is garbage collecting shared memory: -")
 (defconst flow-minor-handle-error-1 "Please wait. Server is handling a request (starting up): \\")
 (defconst flow-minor-handle-error-2 "Please wait. Server is handling a request (starting up): -")
+(defconst flow-minor-handle-error-3 "Please wait. Server is handling a request (starting up)")
 
 (defcustom flow-minor-default-binary "flow"
   "Flow executable to use when no project-specific binary is found."
@@ -136,7 +137,7 @@ BODY progn"
   "Fill types."
   (interactive)
   (flow-minor-region-command region
-    (flow-minor-cmd "suggest" region)
+    (flow-minor-cmd "suggest" "--from" "emacs" region)
     (diff-mode)
     (setf buffer-read-only t)))
 
@@ -145,7 +146,7 @@ BODY progn"
   (interactive)
   (flow-minor-region-command region
     (message "%s" region)
-    (flow-minor-cmd "coverage" region)
+    (flow-minor-cmd "coverage" "--from" "emacs" region)
     (compilation-mode)
     (setf buffer-read-only t)))
 
@@ -173,11 +174,12 @@ BODY progn"
    (let* ((file (buffer-file-name))
           (line (number-to-string (line-number-at-pos)))
           (col (number-to-string (1+ (current-column))))
-          (type (flow-minor-cmd-to-string "type-at-pos" file line col)))
+          (type (flow-minor-cmd-to-string "type-at-pos" "--from" "emacs" file line col)))
      (message "%s" (flow-minor-colorize-type (s-chop-prefixes
                                               (list flow-minor-garbage-error
                                                     flow-minor-handle-error-1
-                                                    flow-minor-handle-error-2)
+                                                    flow-minor-handle-error-2
+                                                    flow-minor-handle-error-3)
                                               (car (s-lines type))))))))
 
 (defun flow-minor-jump-to-definition ()
