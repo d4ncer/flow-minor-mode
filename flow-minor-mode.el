@@ -51,7 +51,7 @@
   :type 'boolean)
 
 (defcustom flow-minor-use-eldoc-p t
-  "Use Eldoc to display type-at-pos"
+  "Use Eldoc to display type-at-pos."
   :group 'flow-minor-mode
   :type 'boolean)
 
@@ -153,10 +153,12 @@ BODY progn"
     ))
 
 (defun flow-minor-colorize-buffer ()
+  "Apply font lock to current buffer."
   (setq font-lock-defaults '(flow-type-font-lock-highlight))
   (font-lock-fontify-buffer))
 
 (defun flow-minor-colorize-type (text)
+  "Add color to TEXT."
   (with-temp-buffer
     (insert text)
     (flow-minor-colorize-buffer)
@@ -188,7 +190,7 @@ BODY progn"
          (progn
            (xref-push-marker-stack)
            (funcall (if flow-minor-jump-other-window #'find-file-other-window #'find-file) path)
-           (goto-line line)
+           (forward-line line)
            (when (> offset-in-line 0)
              (forward-char (1- offset-in-line))))
        (message "Not found")))))
@@ -226,10 +228,12 @@ BODY progn"
 (add-hook 'kill-emacs-hook 'flow-minor-stop-flow-server t)
 
 (defun flow-minor-maybe-delete-process (name)
+  "If process NAME exists, kill it."
   (when (get-process name)
     (delete-process name)))
 
 (defun flow-minor-eldoc-sentinel (process _event)
+  "Create sentinel PROCESS for flow-minor eldoc."
   (when (eq (process-status process) 'exit)
     (if (eq (process-exit-status process) 0)
         (with-current-buffer "*Flow Eldoc*"
@@ -279,7 +283,7 @@ BODY progn"
         (eldoc-mode))))
 
 (defun flow-minor-tag-present-p ()
-  "Return true if the '// @flow' tag is present in the current buffer."
+  "Return non-nil if the '// @flow' tag is present in the current buffer."
   (save-excursion
     (goto-char (point-min))
     (let (stop found)
@@ -315,7 +319,7 @@ BODY progn"
     (flow-minor-mode +1)))
 
 (defun flow-status ()
-  "Invoke flow to check types"
+  "Invoke flow to check types."
   (interactive)
   (let ((cmd "flow status")
         (regexp '(flow "^\\(Error:\\)[ \t]+\\(\\(.+\\):\\([[:digit:]]+\\)\\)"
