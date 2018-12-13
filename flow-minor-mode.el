@@ -190,7 +190,7 @@ BODY progn"
          (progn
            (xref-push-marker-stack)
            (funcall (if flow-minor-jump-other-window #'find-file-other-window #'find-file) path)
-           (forward-line line)
+           (goto-line line)
            (when (> offset-in-line 0)
              (forward-char (1- offset-in-line))))
        (message "Not found")))))
